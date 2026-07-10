@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/* Definisikan custom colors dan fonts di sini */
+@theme {
+  --color-bakrie-gold: #F5A623;
+  --color-bakrie-dark: #1A1A2E;
+  --color-bakrie-red: #E94560;
+  --font-heading: "Montserrat", sans-serif;
+  --font-body: "Open Sans", sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-body);
+    color: #1f2937; /* gray-800 */
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+  }
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-bakrie-dark relative inline-block;
+  }
+  .section-title::after {
+    content: '';
+    @apply absolute -bottom-2 left-0 w-16 h-1 bg-bakrie-gold rounded-full;
+  }
+  .btn-primary {
+    @apply bg-bakrie-gold text-bakrie-dark font-semibold px-6 py-3 rounded-lg hover:bg-yellow-500 transition duration-300 inline-block;
+  }
+  .btn-outline {
+    @apply border-2 border-white text-white font-semibold px-6 py-3 rounded-lg hover:bg-white hover:text-bakrie-dark transition duration-300 inline-block;
+  }
+  .card-hover {
+    @apply transition duration-300 hover:-translate-y-2 hover:shadow-xl;
+  }
+  [x-cloak]{
+    display:none !important;
+  }
+  
+  /* Gradient modern */
+.bg-gradient-modern {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* Efek glassmorphism untuk kartu */
+.card-glass {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+}
+
+/* Animasi untuk elemen */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+}
