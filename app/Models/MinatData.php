@@ -31,16 +31,12 @@ class MinatData extends Model
                     'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'][$month] ?? '-';
     }
 
-    /**
-     * Semua kategori yang tersedia beserta metadata-nya.
-     */
     public static function categories(): array
     {
         return [
             'sembako'                   => ['title' => 'Sembako',                  'icon' => '🛒', 'type' => 'produk',  'color' => '#F5A623'],
             'pengadaan_logistik'        => ['title' => 'Pengadaan & Logistik',     'icon' => '📦', 'type' => 'produk',  'color' => '#3B82F6'],
             'agrobisnis_infrastruktur'  => ['title' => 'Agrobisnis & Infrastruktur','icon' => '🌾', 'type' => 'produk',  'color' => '#22C55E'],
-            'simpan_pinjam'             => ['title' => 'Simpan Pinjam',            'icon' => '💰', 'type' => 'layanan', 'color' => '#10B981'],
             'kemitraan_usaha'           => ['title' => 'Kemitraan Usaha',          'icon' => '🤝', 'type' => 'layanan', 'color' => '#8B5CF6'],
             'konsultasi_keuangan'       => ['title' => 'Konsultasi Keuangan',      'icon' => '💼', 'type' => 'layanan', 'color' => '#6366F1'],
             'pelayanan_anggota'         => ['title' => 'Pelayanan Anggota',        'icon' => '👥', 'type' => 'layanan', 'color' => '#0EA5E9'],

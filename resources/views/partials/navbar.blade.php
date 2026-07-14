@@ -52,7 +52,7 @@
                     <span class="absolute -bottom-1 left-0 h-0.5 bg-bakrie-gold rounded-full transition-all duration-300 group-hover:w-full {{ request()->routeIs('news') ? 'w-full' : 'w-0' }}"></span>
                 </a>
 
-                <!-- Hubungi Kami (Menu Baru) -->
+                <!-- Hubungi Kami -->
                 <a href="{{ route('contact') }}#hubungi-kami" class="font-semibold text-sm text-gray-700 hover:text-bakrie-gold transition-colors duration-200 relative group">
                     Hubungi Kami
                     <span class="absolute -bottom-1 left-0 h-0.5 bg-bakrie-gold rounded-full transition-all duration-300 group-hover:w-full"></span>
@@ -100,11 +100,10 @@
         </div>
     </div>
 
-    {{-- ══════════════════════════════════════════════════════════════════
-         MEGA-MENU PANEL — full-width, attached to <nav> bottom edge
-    ══════════════════════════════════════════════════════════════════ --}}
+    <!-- Mega Menu Panel (Dinamis & Terkoneksi Database) -->
     <div x-show="menuOpen"
          @mouseenter="menuOpen = true"
+         @mouseleave="menuOpen = false"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 -translate-y-2"
          x-transition:enter-end="opacity-100 translate-y-0"
@@ -134,69 +133,52 @@
             </div>
         </div>
 
-        {{-- ── Dua Kolom Konten ── --}}
+        {{-- Dua Kolom Konten --}}
         <div class="container-custom">
             <div class="grid grid-cols-2 gap-0 divide-x-2 divide-amber-100 py-2">
 
+                @php
+                    $navCategories = \App\Models\MinatData::categories();
+                    $navKontens = \App\Models\ProdukLayananKonten::all()->keyBy('slug');
+                    $produkCount = collect($navCategories)->where('type', 'produk')->count();
+                    $layananCount = collect($navCategories)->where('type', 'layanan')->count();
+                @endphp
+
                 {{-- ════ KOLOM KIRI: PRODUK ════ --}}
-                <div class="py-5 pr-8">
+                <div class="py-5 pr-8 text-left">
                     {{-- Label Kategori --}}
                     <div class="flex items-center gap-2 mb-4 px-2">
                         <div class="w-1.5 h-6 bg-gradient-to-b from-bakrie-gold to-yellow-500 rounded-full"></div>
                         <span class="text-xs font-extrabold text-bakrie-gold tracking-[0.18em] uppercase">Produk Koperasi</span>
-                        <span class="text-[10px] bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full">3 Produk</span>
+                        <span class="text-[10px] bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full">{{ $produkCount }} Produk</span>
                     </div>
 
-                    {{-- Item: Sembako --}}
-                    <a href="{{ route('products.sembako') }}"
-                       class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-200 group {{ request()->routeIs('products.sembako') ? 'bg-amber-50 border-l-4 border-bakrie-gold' : 'hover:bg-amber-50/60 border-l-4 border-transparent hover:border-bakrie-gold/50' }}">
-                        <span class="text-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">🛒</span>
-                        <div class="min-w-0">
-                            <h4 class="font-bold text-sm text-gray-800 group-hover:text-bakrie-gold leading-tight">Sembako</h4>
-                            <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">Kebutuhan pokok berkualitas dengan harga kompetitif untuk anggota</p>
-                        </div>
-                        <svg class="w-4 h-4 text-gray-300 group-hover:text-bakrie-gold ml-auto flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-
-                    {{-- Divider Tegas --}}
-                    <div class="my-1 mx-4 flex items-center gap-2">
-                        <div class="w-6 h-0.5 bg-bakrie-gold/50 rounded-full"></div>
-                        <div class="flex-1 h-px bg-gray-100"></div>
+                    <div class="space-y-1">
+                        @foreach($navCategories as $slug => $meta)
+                            @if($meta['type'] === 'produk')
+                                @php
+                                    $kntn = $navKontens[$slug] ?? null;
+                                    $routeMap = [
+                                        'sembako' => 'products.sembako',
+                                        'pengadaan_logistik' => 'products.logistik',
+                                        'agrobisnis_infrastruktur' => 'products.agrobisnis',
+                                    ];
+                                    $routeDest = route($routeMap[$slug] ?? 'home');
+                                @endphp
+                                <a href="{{ $routeDest }}"
+                                   class="flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group hover:bg-amber-50/60 border-l-4 border-transparent hover:border-bakrie-gold/50">
+                                    <span class="text-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">{{ $meta['icon'] }}</span>
+                                    <div class="min-w-0">
+                                        <h4 class="font-bold text-sm text-gray-800 group-hover:text-bakrie-gold leading-tight">{{ $kntn ? $kntn->title : $meta['title'] }}</h4>
+                                        <p class="text-xs text-gray-500 mt-0.5 leading-relaxed truncate">{{ $kntn ? $kntn->description : 'Informasi rincian produk koperasi KOP-AJS' }}</p>
+                                    </div>
+                                    <svg class="w-4 h-4 text-gray-300 group-hover:text-bakrie-gold ml-auto flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            @endif
+                        @endforeach
                     </div>
-
-                    {{-- Item: Logistik --}}
-                    <a href="{{ route('products.logistik') }}"
-                       class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-200 group {{ request()->routeIs('products.logistik') ? 'bg-amber-50 border-l-4 border-bakrie-gold' : 'hover:bg-amber-50/60 border-l-4 border-transparent hover:border-bakrie-gold/50' }}">
-                        <span class="text-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">📦</span>
-                        <div class="min-w-0">
-                            <h4 class="font-bold text-sm text-gray-800 group-hover:text-bakrie-gold leading-tight">Pengadaan &amp; Logistik</h4>
-                            <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">Bahan baku, mesin, dan alat berat skala korporat</p>
-                        </div>
-                        <svg class="w-4 h-4 text-gray-300 group-hover:text-bakrie-gold ml-auto flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-
-                    {{-- Divider Tegas --}}
-                    <div class="my-1 mx-4 flex items-center gap-2">
-                        <div class="w-6 h-0.5 bg-bakrie-gold/50 rounded-full"></div>
-                        <div class="flex-1 h-px bg-gray-100"></div>
-                    </div>
-
-                    {{-- Item: Agrobisnis --}}
-                    <a href="{{ route('products.agrobisnis') }}"
-                       class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-200 group {{ request()->routeIs('products.agrobisnis') ? 'bg-amber-50 border-l-4 border-bakrie-gold' : 'hover:bg-amber-50/60 border-l-4 border-transparent hover:border-bakrie-gold/50' }}">
-                        <span class="text-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">🌾</span>
-                        <div class="min-w-0">
-                            <h4 class="font-bold text-sm text-gray-800 group-hover:text-bakrie-gold leading-tight">Agrobisnis &amp; Infrastruktur</h4>
-                            <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">Silo, cold storage, dan agro-industri terpadu</p>
-                        </div>
-                        <svg class="w-4 h-4 text-gray-300 group-hover:text-bakrie-gold ml-auto flex-shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
 
                     {{-- CTA lihat semua --}}
                     <div class="mt-4 mx-4 pt-3 border-t border-dashed border-amber-200">
@@ -208,90 +190,39 @@
                 </div>
 
                 {{-- ════ KOLOM KANAN: LAYANAN ════ --}}
-                <div class="py-5 pl-8">
+                <div class="py-5 pl-8 text-left">
                     {{-- Label Kategori --}}
                     <div class="flex items-center gap-2 mb-4 px-2">
                         <div class="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full"></div>
                         <span class="text-xs font-extrabold text-blue-600 tracking-[0.18em] uppercase">Layanan Koperasi</span>
-                        <span class="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">6 Layanan</span>
+                        <span class="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">{{ $layananCount }} Layanan</span>
                     </div>
 
-                    {{-- Grid 2×3 untuk 6 layanan agar rapi --}}
-                    <div class="grid grid-cols-2 gap-x-4 gap-y-0">
-
-                        {{-- Simpan Pinjam --}}
-                        <a href="{{ route('services.simpanpinjam') }}"
-                           class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('services.simpanpinjam') ? 'bg-blue-50 border-l-4 border-blue-500' : 'hover:bg-blue-50/50 border-l-4 border-transparent hover:border-blue-400/60' }}">
-                            <span class="text-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">🏦</span>
-                            <div class="min-w-0">
-                                <h4 class="font-bold text-sm text-gray-800 group-hover:text-blue-600 leading-tight">Simpan Pinjam</h4>
-                                <p class="text-[11px] text-gray-500 mt-0.5 leading-relaxed">Pinjaman ringan, proses cepat</p>
-                            </div>
-                        </a>
-
-                        {{-- Kemitraan --}}
-                        <a href="{{ route('services.kemitraan') }}"
-                           class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('services.kemitraan') ? 'bg-blue-50 border-l-4 border-blue-500' : 'hover:bg-blue-50/50 border-l-4 border-transparent hover:border-blue-400/60' }}">
-                            <span class="text-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">🤝</span>
-                            <div class="min-w-0">
-                                <h4 class="font-bold text-sm text-gray-800 group-hover:text-blue-600 leading-tight">Kemitraan Usaha</h4>
-                                <p class="text-[11px] text-gray-500 mt-0.5 leading-relaxed">Supplier terpercaya, jaringan luas</p>
-                            </div>
-                        </a>
-
-                        {{-- Divider row --}}
-                        <div class="col-span-2 my-0.5 flex items-center gap-2 px-3">
-                            <div class="w-5 h-0.5 bg-blue-400/50 rounded-full"></div>
-                            <div class="flex-1 h-px bg-gray-100"></div>
-                            <div class="w-5 h-0.5 bg-blue-400/50 rounded-full"></div>
-                        </div>
-
-                        {{-- Konsultasi --}}
-                        <a href="{{ route('services.konsultasi') }}"
-                           class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('services.konsultasi') ? 'bg-blue-50 border-l-4 border-blue-500' : 'hover:bg-blue-50/50 border-l-4 border-transparent hover:border-blue-400/60' }}">
-                            <span class="text-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">📊</span>
-                            <div class="min-w-0">
-                                <h4 class="font-bold text-sm text-gray-800 group-hover:text-blue-600 leading-tight">Konsultasi Keuangan</h4>
-                                <p class="text-[11px] text-gray-500 mt-0.5 leading-relaxed">Konselor profesional, gratis</p>
-                            </div>
-                        </a>
-
-                        {{-- Pelayanan Anggota --}}
-                        <a href="{{ route('services.pelayanan') }}"
-                           class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('services.pelayanan') ? 'bg-blue-50 border-l-4 border-blue-500' : 'hover:bg-blue-50/50 border-l-4 border-transparent hover:border-blue-400/60' }}">
-                            <span class="text-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">🛍️</span>
-                            <div class="min-w-0">
-                                <h4 class="font-bold text-sm text-gray-800 group-hover:text-blue-600 leading-tight">Pelayanan Anggota</h4>
-                                <p class="text-[11px] text-gray-500 mt-0.5 leading-relaxed">Pendaftaran, update data, 24/7</p>
-                            </div>
-                        </a>
-
-                        {{-- Divider row --}}
-                        <div class="col-span-2 my-0.5 flex items-center gap-2 px-3">
-                            <div class="w-5 h-0.5 bg-blue-400/50 rounded-full"></div>
-                            <div class="flex-1 h-px bg-gray-100"></div>
-                            <div class="w-5 h-0.5 bg-blue-400/50 rounded-full"></div>
-                        </div>
-
-                        {{-- Pemasaran --}}
-                        <a href="{{ route('services.pemasaran') }}"
-                           class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('services.pemasaran') ? 'bg-blue-50 border-l-4 border-blue-500' : 'hover:bg-blue-50/50 border-l-4 border-transparent hover:border-blue-400/60' }}">
-                            <span class="text-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">📢</span>
-                            <div class="min-w-0">
-                                <h4 class="font-bold text-sm text-gray-800 group-hover:text-blue-600 leading-tight">Pemasaran Produk</h4>
-                                <p class="text-[11px] text-gray-500 mt-0.5 leading-relaxed">Promosi toko, marketplace, pameran</p>
-                            </div>
-                        </a>
-
-                        {{-- Pelatihan --}}
-                        <a href="{{ route('services.pelatihan') }}"
-                           class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('services.pelatihan') ? 'bg-blue-50 border-l-4 border-blue-500' : 'hover:bg-blue-50/50 border-l-4 border-transparent hover:border-blue-400/60' }}">
-                            <span class="text-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">🎓</span>
-                            <div class="min-w-0">
-                                <h4 class="font-bold text-sm text-gray-800 group-hover:text-blue-600 leading-tight">Pelatihan &amp; Edukasi</h4>
-                                <p class="text-[11px] text-gray-500 mt-0.5 leading-relaxed">Workshop, literasi keuangan, sertifikat</p>
-                            </div>
-                        </a>
+                    {{-- Grid untuk layanan --}}
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                        @foreach($navCategories as $slug => $meta)
+                            @if($meta['type'] === 'layanan')
+                                @php
+                                    $kntn = $navKontens[$slug] ?? null;
+                                    $routeMap = [
+                                        'kemitraan_usaha' => 'services.kemitraan',
+                                        'konsultasi_keuangan' => 'services.konsultasi',
+                                        'pelayanan_anggota' => 'services.pelayanan',
+                                        'pemasaran_produk' => 'services.pemasaran',
+                                        'pelatihan_edukasi' => 'services.pelatihan',
+                                    ];
+                                    $routeDest = route($routeMap[$slug] ?? 'services');
+                                @endphp
+                                <a href="{{ $routeDest }}"
+                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group hover:bg-blue-50/50 border-l-4 border-transparent hover:border-blue-400/60">
+                                    <span class="text-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">{{ $meta['icon'] }}</span>
+                                    <div class="min-w-0">
+                                        <h4 class="font-bold text-sm text-gray-800 group-hover:text-blue-600 leading-tight">{{ $kntn ? $kntn->title : $meta['title'] }}</h4>
+                                        <p class="text-[11px] text-gray-500 mt-0.5 leading-relaxed truncate">{{ $kntn ? $kntn->description : 'Informasi rincian layanan koperasi KOP-AJS' }}</p>
+                                    </div>
+                                </a>
+                            @endif
+                        @endforeach
                     </div>
 
                     {{-- CTA lihat semua --}}
@@ -308,7 +239,7 @@
 
         {{-- Footer bar ornamen kepercayaan --}}
         <div class="bg-gradient-to-r from-bakrie-dark via-slate-800 to-slate-900 px-8 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 text-left">
                 <span class="text-base">🛡️</span>
                 <p class="text-xs text-gray-300 font-medium">Koperasi Resmi &amp; Berbadan Hukum · PT Bakrie Metal Industries · Beroperasi Sejak <strong class="text-bakrie-gold">1995</strong></p>
             </div>
@@ -317,6 +248,5 @@
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
             </a>
         </div>
-
     </div>{{-- end mega-menu --}}
 </nav>

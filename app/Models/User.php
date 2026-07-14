@@ -17,6 +17,10 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $fillable = [
+        'name', 'email', 'password', 'role', 'google_id',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -24,8 +28,9 @@ class User extends Authenticatable
      */
     protected function casts(): array
     {
-    protected $fillable = [
-    'name', 'email', 'password', 'role', 'google_id',
-    ];
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 }
