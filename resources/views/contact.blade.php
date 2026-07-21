@@ -10,9 +10,9 @@
             <!-- Header Utama -->
             <div class="text-center">
                 <span class="text-bakrie-gold font-bold text-xs tracking-widest uppercase bg-amber-50 px-4 py-1.5 rounded-full border border-amber-200">Hubungi &amp; Gabung</span>
-                <h1 class="text-4xl md:text-5xl font-heading font-extrabold text-bakrie-dark mt-4">Hubungi Kami &amp; Pendaftaran</h1>
+                <h1 class="text-4xl md:text-5xl font-heading font-extrabold text-bakrie-dark mt-4">{{ $kontenHubungi->title ?? 'Hubungi Kami & Pendaftaran' }}</h1>
                 <div class="w-24 h-1 bg-bakrie-gold rounded-full mx-auto mt-4"></div>
-                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Informasi alamat akurat, denah desa operasional PT Bakrie Metal Industries, dan formulir resmi keanggotaan KOP-AJS.</p>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">{{ $kontenHubungi->description ?? 'Informasi alamat akurat, denah desa operasional PT Bakrie Metal Industries, dan formulir resmi keanggotaan KOP-AJS.' }}</p>
             </div>
 
             <!-- Bagian Baru: Hubungi Kami & Peta (Denah Akurat) -->

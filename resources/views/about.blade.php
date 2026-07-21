@@ -7,19 +7,13 @@
     <div class="container-custom">
         <div class="max-w-4xl mx-auto">
             <span class="text-bakrie-gold font-semibold text-sm tracking-wider uppercase">Tentang Kami</span>
-            <h1 class="text-4xl md:text-5xl font-heading font-extrabold text-bakrie-dark mt-2">Koperasi Sejahtera BMI</h1>
+            <h1 class="text-4xl md:text-5xl font-heading font-extrabold text-bakrie-dark mt-2">
+                {{ $kontenTentang->title ?? 'Koperasi Sejahtera BMI' }}
+            </h1>
             <div class="w-20 h-1 bg-bakrie-gold rounded-full mt-4"></div>
 
-            <div class="mt-10 space-y-6 text-gray-700 leading-relaxed text-lg">
-                <p>
-                  -  <strong>Koperasi Karyawan PT Bakrie Metal Industries (Koperasi BMI)</strong> didirikan pada tahun <strong>1995</strong> dengan tujuan meningkatkan kesejahteraan karyawan melalui penyediaan sembako berkualitas, simpan pinjam, dan program pemberdayaan ekonomi.
-                </p>
-                <p>
-                    Berawal dari toko kecil di lingkungan pabrik, kini koperasi BMI melayani lebih dari <strong>1.200 anggota</strong> dari karyawan BMI dan masyarakat sekitar. Kami berkomitmen untuk memberikan harga terjangkau, produk berkualitas, dan pelayanan yang ramah.
-                </p>
-                <p>
-                    Koperasi BMI juga aktif dalam program <strong>Tanggung Jawab Sosial Perusahaan (CSR)</strong>, seperti pasar murah, bantuan sembako, dan pelatihan kewirausahaan bagi anggota dan masyarakat.
-                </p>
+            <div class="mt-10 space-y-6 text-gray-700 leading-relaxed text-lg whitespace-pre-line">
+                {{ $kontenTentang->description ?? 'Koperasi Karyawan PT Bakrie Metal Industries didirikan pada tahun 1995 dengan tujuan meningkatkan kesejahteraan karyawan melalui penyediaan sembako berkualitas, simpan pinjam, dan program pemberdayaan ekonomi.' }}
             </div>
 
             <!-- Visi & Misi -->

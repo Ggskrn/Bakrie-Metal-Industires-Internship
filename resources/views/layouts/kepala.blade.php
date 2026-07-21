@@ -33,66 +33,97 @@
                     </div>
                 </div>
 
-                <nav class="px-3 py-4 space-y-0.5">
+                <nav class="px-3 py-4 space-y-1">
+
+                    <a href="{{ route('home') }}"
+                       class="sidebar-item flex items-start gap-3 px-3 py-2 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white">
+                        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                        <div class="min-w-0">
+                            <span class="text-sm block">Halaman Utama</span>
+                            <span class="text-[10px] text-slate-500 block font-normal leading-tight">Lihat tampilan depan website</span>
+                        </div>
+                    </a>
 
                     {{-- ── UTAMA ── --}}
-                    <p class="px-3 pt-1 pb-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Utama</p>
+                    <p class="px-3 pt-2 pb-1 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Utama</p>
+
+                    <button @click="setTab('halaman_utama_list')"
+                            :class="activeTab === 'halaman_utama_list' || ['beranda','tentang','hubungi_kami','jumlah_anggota','halaman_utama'].includes(activeTab) ? 'bg-blue-600 text-white font-extrabold shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                            class="sidebar-item w-full text-left flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer">
+                        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                        <div class="min-w-0">
+                            <span class="text-sm block">Kelola Halaman Utama</span>
+                            <span class="text-[10px] text-slate-500 block font-normal leading-tight">Beranda, Tentang, Berita, Hubungi Kami, Anggota</span>
+                        </div>
+                    </button>
 
                     <button @click="setTab('overview')"
                             :class="activeTab === 'overview' ? 'bg-blue-600 text-white font-extrabold shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
-                            class="sidebar-item w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm cursor-pointer">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                        <span>Dashboard Overview</span>
+                            class="sidebar-item w-full text-left flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer">
+                        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        <div class="min-w-0">
+                            <span class="text-sm block">Dashboard Overview</span>
+                            <span class="text-[10px] text-slate-500 block font-normal leading-tight">Statistik & ringkasan aktivitas</span>
+                        </div>
                     </button>
 
                     <button @click="setTab('approval')"
                             :class="activeTab === 'approval' ? 'bg-blue-600 text-white font-extrabold shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
-                            class="sidebar-item w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm cursor-pointer relative">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>Menunggu Approval</span>
+                            class="sidebar-item w-full text-left flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer relative">
+                        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div class="min-w-0">
+                            <span class="text-sm block">Menunggu Approval</span>
+                            <span class="text-[10px] text-slate-500 block font-normal leading-tight">Review & publish draft pending</span>
+                        </div>
                         <span id="pending-badge-total" class="absolute right-3 top-3 w-2 h-2 bg-red-500 rounded-full hidden animate-pulse"></span>
                     </button>
 
                     <button @click="setTab('kirim')"
-                            :class="activeTab === 'kirim' ? 'bg-blue-600 text-white font-extrabold shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
-                            class="sidebar-item w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm cursor-pointer">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                        <span>Kirim Catatan</span>
+                            :class="activeTab==='kirim' ? 'bg-blue-600 text-white font-extrabold shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                            class="sidebar-item w-full text-left flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer">
+                        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                        <div class="min-w-0">
+                            <span class="text-sm block">Kirim Catatan ke Admin</span>
+                            <span class="text-[10px] text-slate-500 block font-normal leading-tight">Instruksi koreksi untuk Administrator</span>
+                        </div>
                     </button>
 
                     <button @click="setTab('riwayat')"
-                            :class="activeTab === 'riwayat' ? 'bg-blue-600 text-white font-extrabold shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
-                            class="sidebar-item w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm cursor-pointer">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>Riwayat Catatan</span>
+                            :class="activeTab==='riwayat' ? 'bg-blue-600 text-white font-extrabold shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                            class="sidebar-item w-full text-left flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer">
+                        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                        <div class="min-w-0">
+                            <span class="text-sm block">Riwayat Catatan</span>
+                            <span class="text-[10px] text-slate-500 block font-normal leading-tight">Balasan klarifikasi dari Admin</span>
+                        </div>
                     </button>
 
-                    {{-- ── PRODUK & LAYANAN (Accordion) ── --}}
-                    <div class="pt-3">
-                        <p class="px-3 pb-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Produk & Layanan</p>
+                    {{-- ── PRODUK & LAYANAN ── --}}
+                    <div class="pt-2">
+                        <p class="px-3 pb-1 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Produk &amp; Layanan</p>
 
                         <button @click="setTab('produk_list')"
                                 :class="activeTab==='produk_list' || activeTab.startsWith('prod_') ? 'bg-blue-600 text-white font-extrabold shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
-                                class="sidebar-item w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm cursor-pointer">
-                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                            <span>Produk Koperasi</span>
+                                class="sidebar-item w-full text-left flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer">
+                            <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                            <div class="min-w-0">
+                                <span class="text-sm block">Produk Koperasi</span>
+                                <span class="text-[10px] text-slate-500 block font-normal leading-tight">Konten & peminatan produk</span>
+                            </div>
                         </button>
 
                         <button @click="setTab('layanan_list')"
                                 :class="activeTab==='layanan_list' || activeTab.startsWith('lay_') ? 'bg-blue-600 text-white font-extrabold shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
-                                class="sidebar-item w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm cursor-pointer mt-0.5">
-                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            <span>Layanan Koperasi</span>
+                                class="sidebar-item w-full text-left flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer mt-0.5">
+                            <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            <div class="min-w-0">
+                                <span class="text-sm block">Layanan Koperasi</span>
+                                <span class="text-[10px] text-slate-500 block font-normal leading-tight">Konten & peminatan layanan</span>
+                            </div>
                         </button>
                     </div>
 
                     <div class="h-px bg-slate-800 my-3"></div>
-
-                    <a href="{{ route('home') }}"
-                       class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white text-sm">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                        <span>Halaman Utama</span>
-                    </a>
                 </nav>
             </div>
 
@@ -151,9 +182,17 @@
     <script>
         function kepalaDashboard() {
             return {
-                activeTab: localStorage.getItem('kepala_active_tab') || 'overview',
+                activeTab: localStorage.getItem('kepala_active_tab') || 'halaman_utama',
                 darkMode: localStorage.getItem('dark_mode') === 'true',
+                detailModalOpen: false,
+                detailItem: {},
+                detailType: '',
+                searchProduk: '',
+                searchBerita: '',
+                searchLayanan: '',
                 tabLabels: {
+                    halaman_utama_list: 'Kelola Halaman Utama',
+                    halaman_utama: 'Kelola Halaman Utama',
                     overview: 'Dashboard Overview',
                     approval: 'Menunggu Approval',
                     kirim: 'Kirim Catatan ke Admin',
@@ -163,21 +202,12 @@
                     prod_sembako: 'Produk Koperasi',
                     prod_pengadaan_logistik: 'Produk Koperasi',
                     prod_agrobisnis_infrastruktur: 'Produk Koperasi',
+                    lay_simpan_pinjam: 'Layanan Koperasi',
                     lay_kemitraan_usaha: 'Layanan Koperasi',
                     lay_konsultasi_keuangan: 'Layanan Koperasi',
                     lay_pelayanan_anggota: 'Layanan Koperasi',
                     lay_pemasaran_produk: 'Layanan Koperasi',
                     lay_pelatihan_edukasi: 'Layanan Koperasi',
-                },
-                detailLabels: {
-                    prod_sembako: 'Detail — Sembako',
-                    prod_pengadaan_logistik: 'Detail — Pengadaan & Logistik',
-                    prod_agrobisnis_infrastruktur: 'Detail — Agrobisnis & Infrastruktur',
-                    lay_kemitraan_usaha: 'Detail — Kemitraan Usaha',
-                    lay_konsultasi_keuangan: 'Detail — Konsultasi Keuangan',
-                    lay_pelayanan_anggota: 'Detail — Pelayanan Anggota',
-                    lay_pemasaran_produk: 'Detail — Pemasaran Produk',
-                    lay_pelatihan_edukasi: 'Detail — Pelatihan & Edukasi',
                 },
                 init() {
                     if (this.darkMode) {
@@ -199,6 +229,11 @@
                     } else {
                         document.documentElement.classList.remove('dark');
                     }
+                },
+                openDetail(type, item) {
+                    this.detailType = type;
+                    this.detailItem = item;
+                    this.detailModalOpen = true;
                 }
             }
         }

@@ -38,7 +38,6 @@ class DashboardController extends Controller
         // Ambil Data Minat & Konten
         $minatData = MinatData::orderBy('year', 'desc')->orderBy('month', 'desc')->get();
         $kontens = ProdukLayananKonten::all()->keyBy('slug');
-
         // Pastikan 9 konten default terbuat jika kosong
         $categories = MinatData::categories();
         foreach ($categories as $slug => $meta) {
@@ -55,6 +54,24 @@ class DashboardController extends Controller
             }
         }
 
+        // Pastikan konten halaman utama terbuat jika kosong
+        $pageSlugs = [
+            'beranda' => ['title' => 'Sembako Berkualitas untuk Semua', 'desc' => 'Koperasi BMI menyediakan sembako murah dan berkualitas bagi karyawan, keluarga, dan masyarakat sekitar. Bergabunglah dan nikmati manfaatnya!'],
+            'tentang' => ['title' => 'Tentang KOP-AJS', 'desc' => 'Koperasi Karyawan PT Bakrie Metal Industries didirikan pada tahun 1995 dengan tujuan meningkatkan kesejahteraan karyawan melalui penyediaan sembako berkualitas, simpan pinjam, dan program pemberdayaan ekonomi.'],
+            'hubungi_kami' => ['title' => 'Hubungi Kami & Pendaftaran', 'desc' => 'Informasi alamat akurat, denah desa operasional PT Bakrie Metal Industries, dan formulir resmi keanggotaan KOP-AJS.'],
+            'jumlah_anggota' => ['title' => 'Jumlah Anggota', 'desc' => '1200'],
+        ];
+        foreach ($pageSlugs as $slug => $meta) {
+            if (!$kontens->has($slug)) {
+                $konten = ProdukLayananKonten::create([
+                    'slug' => $slug,
+                    'title' => $meta['title'],
+                    'description' => $meta['desc'],
+                    'status' => 'approved'
+                ]);
+                $kontens->put($slug, $konten);
+            }
+        }
         return view('admin.dashboard', compact(
             'user', 'totalAnggota', 'totalBerita', 'totalStok',
             'messages', 'anggota', 'stoks', 'beritas', 'announcements', 'unreadCountForAdmin',

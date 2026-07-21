@@ -262,67 +262,283 @@
         </div>
     </div>
 
-    {{-- ======================================================= --}}
-    {{-- TAB: KIRIM CATATAN                                      --}}
-    {{-- ======================================================= --}}
-    <div x-show="activeTab === 'kirim'" class="space-y-6" x-cloak>
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-blue-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-2xl">📢</div>
-            <div class="text-left">
-                <h2 class="text-xl font-heading font-extrabold text-bakrie-dark dark:text-white">Kirim Catatan ke Admin</h2>
-                <p class="text-xs text-gray-400 mt-0.5">Berikan koreksi, instruksi, atau arahan langsung ke dashboard Administrator.</p>
+    {{-- ===================== TAB: HALAMAN UTAMA ===================== --}}
+    <div x-show="['beranda', 'tentang', 'hubungi_kami', 'jumlah_anggota', 'halaman_utama'].includes(activeTab)" x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+         style="display:none;">
+
+        {{-- Header --}}
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-6 md:p-8 shadow-xl mb-6">
+            <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%221%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z%22/%3E%3C/g%3E%3C/svg%3E')]"></div>
+            <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Pantau Halaman Utama</h1>
+                    <p class="mt-2 text-blue-100 text-sm md:text-base max-w-lg">
+                        Lihat konten Beranda, Tentang, Hubungi Kami, dan Jumlah Anggota yang tampil di halaman utama website.
+                    </p>
+                </div>
+                <div class="flex-shrink-0 bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 text-white text-sm font-medium">
+                    📅 {{ now()->translatedFormat('l, d F Y') }}
+                </div>
             </div>
         </div>
 
-        <div class="max-w-2xl text-left">
-            <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-200 dark:border-slate-700 shadow-sm">
-                <form action="{{ route('kepala.announce') }}" method="POST" class="space-y-4">
-                    @csrf
+        {{-- Grid Form Cards --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            {{-- Beranda --}}
+            @php $kontenBeranda = $kontens['beranda'] ?? null; @endphp
+            <div x-show="activeTab === 'beranda' || activeTab === 'halaman_utama'" class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-3 flex items-center gap-2">
+                    <span class="text-white text-lg">🏠</span>
+                    <h3 class="text-white font-bold text-sm">Konten Beranda</h3>
+                </div>
+                <div class="p-5 space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Isi Catatan / Instruksi</label>
-                        <textarea name="message" rows="6" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-2xl text-sm focus:border-blue-500 focus:ring focus:ring-blue-100 text-slate-800 dark:text-white" placeholder="Contoh: Tolong sesuaikan harga sembako beras premium..."></textarea>
+                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Judul / Headline</label>
+                        <input type="text" readonly value="{{ $kontenBeranda->draft_title ?? ($kontenBeranda->title ?? '') }}"
+                               class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white cursor-not-allowed">
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3.5 rounded-xl transition shadow cursor-pointer text-sm">
-                        Kirim Catatan ➔
-                    </button>
-                </form>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Deskripsi / Sub-headline</label>
+                        <textarea rows="3" readonly
+                                  class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white resize-none cursor-not-allowed">{{ $kontenBeranda->draft_description ?? ($kontenBeranda->description ?? '') }}</textarea>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        @if($kontenBeranda && $kontenBeranda->status === 'pending')
+                            <span class="text-xs text-amber-600 dark:text-amber-400 font-semibold">⏳ Menunggu persetujuan Anda</span>
+                        @else
+                            <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">✅ Terpublikasi</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            {{-- Tentang --}}
+            @php $kontenTentang = $kontens['tentang'] ?? null; @endphp
+            <div x-show="activeTab === 'tentang' || activeTab === 'halaman_utama'" class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-500 px-5 py-3 flex items-center gap-2">
+                    <span class="text-white text-lg">ℹ️</span>
+                    <h3 class="text-white font-bold text-sm">Konten Tentang</h3>
+                </div>
+                <div class="p-5 space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Judul</label>
+                        <input type="text" readonly value="{{ $kontenTentang->draft_title ?? ($kontenTentang->title ?? '') }}"
+                               class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Deskripsi</label>
+                        <textarea rows="3" readonly
+                                  class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white resize-none cursor-not-allowed">{{ $kontenTentang->draft_description ?? ($kontenTentang->description ?? '') }}</textarea>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        @if($kontenTentang && $kontenTentang->status === 'pending')
+                            <span class="text-xs text-amber-600 dark:text-amber-400 font-semibold">⏳ Menunggu persetujuan Anda</span>
+                        @else
+                            <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">✅ Terpublikasi</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            {{-- Hubungi Kami --}}
+            @php $kontenHubungi = $kontens['hubungi_kami'] ?? null; @endphp
+            <div x-show="activeTab === 'hubungi_kami' || activeTab === 'halaman_utama'" class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-3 flex items-center gap-2">
+                    <span class="text-white text-lg">📞</span>
+                    <h3 class="text-white font-bold text-sm">Konten Hubungi Kami</h3>
+                </div>
+                <div class="p-5 space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Judul</label>
+                        <input type="text" readonly value="{{ $kontenHubungi->draft_title ?? ($kontenHubungi->title ?? '') }}"
+                               class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Deskripsi</label>
+                        <textarea rows="3" readonly
+                                  class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white resize-none cursor-not-allowed">{{ $kontenHubungi->draft_description ?? ($kontenHubungi->description ?? '') }}</textarea>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        @if($kontenHubungi && $kontenHubungi->status === 'pending')
+                            <span class="text-xs text-amber-600 dark:text-amber-400 font-semibold">⏳ Menunggu persetujuan Anda</span>
+                        @else
+                            <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">✅ Terpublikasi</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            {{-- Jumlah Anggota --}}
+            @php $kontenAnggota = $kontens['jumlah_anggota'] ?? null;
+                 $dbMemberCount = $totalAnggota ?? 0;
+            @endphp
+            <div x-show="activeTab === 'jumlah_anggota' || activeTab === 'halaman_utama'" class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-500 to-pink-500 px-5 py-3 flex items-center gap-2">
+                    <span class="text-white text-lg">👥</span>
+                    <h3 class="text-white font-bold text-sm">Jumlah Anggota</h3>
+                </div>
+                <div class="p-5 space-y-4">
+                    {{-- Live Stats --}}
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-3 text-center">
+                            <p class="text-xs text-purple-600 dark:text-purple-400 font-bold">Mendaftar di DB</p>
+                            <p class="text-2xl font-extrabold text-purple-700 dark:text-purple-300 mt-1">{{ number_format($dbMemberCount) }}</p>
+                        </div>
+                        <div class="bg-pink-50 dark:bg-pink-900/20 rounded-xl p-3 text-center">
+                            <p class="text-xs text-pink-600 dark:text-pink-400 font-bold">Total Tampil di Web</p>
+                            @php
+                                $baseCount = $kontenAnggota ? (int)($kontenAnggota->description ?? 0) : 0;
+                                $totalDisplay = $baseCount + $dbMemberCount;
+                            @endphp
+                            <p class="text-2xl font-extrabold text-pink-700 dark:text-pink-300 mt-1">{{ number_format($totalDisplay) }}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">
+                                Angka Dasar Manual
+                            </label>
+                            <input type="number" readonly value="{{ $kontenAnggota->description ?? 0 }}"
+                                   class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white cursor-not-allowed">
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Total = Manual + DB ({{ $dbMemberCount }} anggota)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>{{-- end grid --}}
+    </div>
+
+    {{-- ===================== TAB: PRODUK LIST ===================== --}}
+    <div x-show="activeTab === 'produk_list'" x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+         style="display:none;">
+
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                    Produk Koperasi
+                </h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Daftar produk koperasi lengkap</p>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <div class="relative max-w-md">
+                <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" placeholder="Cari produk koperasi..." x-model="searchProduk"
+                       class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-md overflow-hidden">
+            <div class="bg-amber-500 px-5 py-3">
+                <h3 class="text-white font-bold text-sm uppercase tracking-wider">Daftar Produk Koperasi</h3>
+            </div>
+            <div class="divide-y-2 divide-gray-200 dark:divide-slate-600">
+                @foreach($kontens as $slug => $konten)
+                @if(in_array($slug, ['sembako', 'pengadaan_logistik', 'agrobisnis_infrastruktur']))
+                <div class="px-5 py-4 hover:bg-amber-50 dark:hover:bg-slate-700/30 transition-colors duration-150"
+                     x-show="searchProduk === '' || '{{ strtolower($konten->title) }}'.includes(searchProduk.toLowerCase())">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm text-slate-800 dark:text-slate-100">{{ $konten->title }}</p>
+                            @if($konten->description)
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{{ $konten->description }}</p>
+                            @endif
+                            <div class="flex items-center gap-3 mt-2">
+                                @if($konten->harga_info)
+                                <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">💰 {{ Str::limit($konten->harga_info, 30) }}</span>
+                                @endif
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
+                                    {{ $konten->status === 'approved' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400' : 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-400' }}">
+                                    {{ ucfirst($konten->status) }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <button @click="setTab('prod_{{ $slug }}')"
+                                    class="px-3 py-1.5 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-xs font-semibold rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-colors">
+                                Lihat Detail →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                @endforeach
             </div>
         </div>
     </div>
 
-    {{-- ======================================================= --}}
-    {{-- TAB: RIWAYAT CATATAN                                    --}}
-    {{-- ======================================================= --}}
-    <div x-show="activeTab === 'riwayat'" class="space-y-6" x-cloak>
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-2xl">📋</div>
-            <div class="text-left">
-                <h2 class="text-xl font-heading font-extrabold text-bakrie-dark dark:text-white">Riwayat Catatan &amp; Klarifikasi</h2>
-                <p class="text-xs text-gray-400 mt-0.5">Semua instruksi yang terkirim beserta balasan dari Admin.</p>
+    {{-- ===================== TAB: LAYANAN LIST ===================== --}}
+    <div x-show="activeTab === 'layanan_list'" x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+         style="display:none;">
+
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    Layanan Produksi
+                </h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Daftar layanan koperasi lengkap</p>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-3xl border border-gray-200 dark:border-slate-700 shadow-sm space-y-4">
-            @forelse($announcements as $ann)
-            <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl text-left space-y-3">
-                <div>
-                    <span class="text-[10px] text-gray-400 font-bold block mb-1">📅 Dikirim: {{ $ann->created_at->format('d M Y, H:i') }}</span>
-                    <p class="text-sm text-slate-800 dark:text-gray-200 pl-3 border-l-2 border-blue-300 font-medium">{{ $ann->message }}</p>
-                </div>
-                <div class="pt-3 border-t border-dashed dark:border-slate-700">
-                    @if($ann->reply)
-                    <div class="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-250 dark:border-emerald-900/40 p-4 rounded-xl">
-                        <p class="text-xs text-emerald-800 dark:text-emerald-400 font-bold">✅ Klarifikasi Admin:</p>
-                        <p class="text-sm text-slate-700 dark:text-gray-300 mt-1">{{ $ann->reply }}</p>
-                    </div>
-                    @else
-                    <span class="text-xs text-amber-600 dark:text-amber-400 italic">⏳ Menunggu balasan dari Administrator...</span>
-                    @endif
-                </div>
+        <div class="mb-4">
+            <div class="relative max-w-md">
+                <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" placeholder="Cari layanan..." x-model="searchLayanan"
+                       class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
             </div>
-            @empty
-            <p class="text-gray-400 text-sm py-12 text-center">Belum ada riwayat.</p>
-            @endforelse
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-md overflow-hidden">
+            <div class="bg-indigo-600 px-5 py-3">
+                <h3 class="text-white font-bold text-sm uppercase tracking-wider">Daftar Layanan Koperasi</h3>
+            </div>
+            <div class="divide-y-2 divide-gray-200 dark:divide-slate-600">
+                @foreach($kontens as $slug => $konten)
+                @if(!in_array($slug, ['sembako', 'pengadaan_logistik', 'agrobisnis_infrastruktur', 'beranda', 'tentang', 'hubungi_kami', 'jumlah_anggota']))
+                <div class="px-5 py-4 hover:bg-indigo-50 dark:hover:bg-slate-700/30 transition-colors duration-150"
+                     x-show="searchLayanan === '' || '{{ strtolower($konten->title) }}'.includes(searchLayanan.toLowerCase())">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm text-slate-800 dark:text-slate-100">{{ $konten->title }}</p>
+                            @if($konten->description)
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{{ $konten->description }}</p>
+                            @endif
+                            <div class="flex items-center gap-3 mt-2">
+                                @if($konten->harga_info)
+                                <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">💰 {{ Str::limit($konten->harga_info, 30) }}</span>
+                                @endif
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
+                                    {{ $konten->status === 'approved' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400' : 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-400' }}">
+                                    {{ ucfirst($konten->status) }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <button @click="setTab('lay_{{ $slug }}')"
+                                    class="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs font-semibold rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">
+                                Lihat Detail →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                @endforeach
+            </div>
         </div>
     </div>
 

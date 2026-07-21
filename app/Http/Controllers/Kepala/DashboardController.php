@@ -42,11 +42,49 @@ class DashboardController extends Controller
         // Data minat historis untuk visualisasi grafik di kepala
         $minatData = MinatData::orderBy('year', 'desc')->orderBy('month', 'desc')->get();
         $kontens = ProdukLayananKonten::all()->keyBy('slug');
+
+        // Pastikan 9 konten default terbuat jika kosong
+        $categories = MinatData::categories();
+        foreach ($categories as $slug => $meta) {
+            if (!$kontens->has($slug)) {
+                $konten = ProdukLayananKonten::create([
+                    'slug' => $slug,
+                    'title' => $meta['title'],
+                    'description' => 'Deskripsi default untuk ' . $meta['title'],
+                    'syarat' => 'Syarat default ' . $meta['title'],
+                    'harga_info' => 'Info biaya / harga default',
+                    'status' => 'approved'
+                ]);
+                $kontens->put($slug, $konten);
+            }
+        }
+
+        // Pastikan konten halaman utama terbuat jika kosong
+        $pageSlugs = [
+            'beranda' => ['title' => 'Sembako Berkualitas untuk Semua', 'desc' => 'Koperasi BMI menyediakan sembako murah dan berkualitas bagi karyawan, keluarga, dan masyarakat sekitar. Bergabunglah dan nikmati manfaatnya!'],
+            'tentang' => ['title' => 'Tentang KOP-AJS', 'desc' => 'Koperasi Karyawan PT Bakrie Metal Industries didirikan pada tahun 1995 dengan tujuan meningkatkan kesejahteraan karyawan melalui penyediaan sembako berkualitas, simpan pinjam, dan program pemberdayaan ekonomi.'],
+            'hubungi_kami' => ['title' => 'Hubungi Kami & Pendaftaran', 'desc' => 'Informasi alamat akurat, denah desa operasional PT Bakrie Metal Industries, dan formulir resmi keanggotaan KOP-AJS.'],
+            'jumlah_anggota' => ['title' => 'Jumlah Anggota', 'desc' => '1200'],
+        ];
+        foreach ($pageSlugs as $slug => $meta) {
+            if (!$kontens->has($slug)) {
+                $konten = ProdukLayananKonten::create([
+                    'slug' => $slug,
+                    'title' => $meta['title'],
+                    'description' => $meta['desc'],
+                    'status' => 'approved'
+                ]);
+                $kontens->put($slug, $konten);
+            }
+        }
+
+        $stoks = Stok::orderBy('product_name')->get();
+        $beritas = Berita::latest()->get();
         
         return view('kepala.dashboard', compact(
             'activities', 'announcements', 'unreadRepliesCount', 
             'pendingStoks', 'pendingBeritas', 'pendingMinats', 'pendingKontens',
-            'minatData', 'kontens'
+            'minatData', 'kontens', 'stoks', 'beritas'
         ));
     }
 

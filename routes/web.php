@@ -18,7 +18,11 @@ use App\Http\Controllers\Auth\LogoutController;
 
 // Halaman Utama
 Route::get('/', function () {
-    return view('home');
+    $kontenBeranda = \App\Models\ProdukLayananKonten::where('slug', 'beranda')->first();
+    $kontenAnggota = \App\Models\ProdukLayananKonten::where('slug', 'jumlah_anggota')->first();
+    $dbMemberCount = \App\Models\User::where('role', 'public')->count();
+    $totalAnggota = ($kontenAnggota ? (int)$kontenAnggota->description : 1200) + $dbMemberCount;
+    return view('home', compact('kontenBeranda', 'totalAnggota'));
 })->name('home');
 
 Route::get('/produk', function () {
@@ -26,7 +30,8 @@ Route::get('/produk', function () {
 })->name('products');
 
 Route::get('/tentang', function () {
-    return view('about');
+    $kontenTentang = \App\Models\ProdukLayananKonten::where('slug', 'tentang')->first();
+    return view('about', compact('kontenTentang'));
 })->name('about');
 
 Route::get('/berita', function () {
@@ -34,7 +39,8 @@ Route::get('/berita', function () {
 })->name('news');
 
 Route::get('/kontak', function () {
-    return view('contact');
+    $kontenHubungi = \App\Models\ProdukLayananKonten::where('slug', 'hubungi_kami')->first();
+    return view('contact', compact('kontenHubungi'));
 })->name('contact');
 
 Route::get('/proyek', function () {

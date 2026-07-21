@@ -14,10 +14,10 @@
                 🛒 Koperasi Karyawan BMI
             </span>
             <h1 class="text-4xl md:text-6xl font-heading font-extrabold text-white leading-tight">
-                Sembako <span class="text-bakrie-gold">Berkualitas</span><br>untuk Semua
+                {{ $kontenBeranda->title ?? 'Sembako Berkualitas untuk Semua' }}
             </h1>
             <p class="text-lg md:text-xl text-gray-300 mt-6 leading-relaxed max-w-2xl">
-                Koperasi BMI menyediakan sembako murah dan berkualitas bagi karyawan, keluarga, dan masyarakat sekitar. Bergabunglah dan nikmati manfaatnya!
+                {{ $kontenBeranda->description ?? 'Koperasi BMI menyediakan sembako murah dan berkualitas bagi karyawan, keluarga, dan masyarakat sekitar. Bergabunglah dan nikmati manfaatnya!' }}
             </p>
             <div class="flex flex-wrap gap-4 mt-8">
                 <a href="{{ route('products.sembako') }}" class="btn-primary">Lihat Produk</a>
@@ -37,7 +37,7 @@
     <div class="container-custom">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-                <p class="text-4xl md:text-5xl font-heading font-extrabold text-bakrie-gold">1.200+</p>
+                <p class="text-4xl md:text-5xl font-heading font-extrabold text-bakrie-gold">{{ number_format($totalAnggota) }}+</p>
                 <p class="text-gray-600 font-semibold mt-1">Anggota Aktif</p>
             </div>
             <div>

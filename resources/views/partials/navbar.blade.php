@@ -59,8 +59,13 @@
                 </a>
 
                 <!-- CTA Daftar Anggota -->
+                @php
+                    $kontenAnggota = \App\Models\ProdukLayananKonten::where('slug', 'jumlah_anggota')->first();
+                    $dbMemberCount = \App\Models\User::where('role', 'public')->count();
+                    $memberCount = ($kontenAnggota ? (int)$kontenAnggota->description : 1200) + $dbMemberCount;
+                @endphp
                 <a href="{{ route('contact') }}" class="btn-primary text-sm transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                    Daftar Anggota
+                    Daftar Anggota ({{ number_format($memberCount) }})
                 </a>
 
                 @auth
